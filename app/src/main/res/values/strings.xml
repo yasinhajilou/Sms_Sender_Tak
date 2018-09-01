@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Tak</string>
+    <string name="imgBtnEdit">ویرایش این آیتم</string>
+    <string name="imgBtnDelete">حذف این آیتم</string>
+    <string name="subjectListViewPattern">موضوع</string>
+    <string name="txtContentListViewPattern">محتوا محتوا محتوا محتوا</string>
+    <string name="title_pattern">عنوان</string>
+    <string name="description_pattern">description</string>
+    <string name="hint_PhoneEditText">شماره تلفن</string>
+    <string name="send_Button">ارسال</string>
+    <string name="Subject_EditText">سرفصل</string>
+    <string name="Done_Button">ثبت</string>
+    <string name="tak_nameTollbar">تاک</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

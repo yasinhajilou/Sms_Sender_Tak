@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:background="@drawable/background_bea"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_alignParentTop="true"
+        android:id="@+id/txtLableName"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/lalezar"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:text="نام گروه"
+        android:textSize="26sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/edtGroupName"
+        android:textDirection="rtl"
+        android:background="@drawable/rounded_shape_edit_text"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/txtLableName"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <ScrollView
+        android:id="@+id/scrollViewGroup"
+        android:padding="10dp"
+        android:layout_below="@+id/edtGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <TextView
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/bnazanin"
+            android:id="@+id/txtGroupMember"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+    <Button
+        android:fontFamily="@font/lalezar"
+        android:textColor="@android:color/white"
+        android:text="تایید"
+        android:id="@+id/btnDoneGroup"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/scrollViewGroup"
+        android:background="@drawable/rounded_btn_done"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <Button
+        android:layout_marginBottom="10dp"
+        android:textColor="@android:color/white"
+        android:text="لغو"
+        android:fontFamily="@font/lalezar"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/rounded_btn_cancel"
+        android:layout_marginTop="10dp"
+        android:id="@+id/btnCancelGroup"
+        android:layout_below="@+id/btnDoneGroup"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+</RelativeLayout>

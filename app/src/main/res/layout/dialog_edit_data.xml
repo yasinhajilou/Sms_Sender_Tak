@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.CardView
+        android:layout_margin="20dp"
+        app:cardCornerRadius="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <EditText
+            android:textDirection="rtl"
+            android:padding="4dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/Subject_EditText"
+            android:id="@+id/edtSubjectAlertDialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:targetApi="jelly_bean_mr1" />
+    </android.support.v7.widget.CardView>
+    <TextView
+        android:id="@+id/txtChar"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp" />
+    <android.support.v7.widget.CardView
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:cardCornerRadius="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+        <EditText
+            android:textDirection="rtl"
+            android:id="@+id/edtContentAlertDialog"
+            android:padding="4dp"
+            android:background="@android:color/transparent"
+            android:hint="محتوا..."
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.CardView>
+    <Button
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:text="ثبت"
+        android:id="@+id/btnDoneAlertDialog"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+    <Button
+        android:id="@+id/btnExitAlertDialog"
+        android:textColor="@android:color/white"
+        android:text="خروج"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+</LinearLayout>

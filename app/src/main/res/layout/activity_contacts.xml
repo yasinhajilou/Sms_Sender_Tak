@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ContactsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/appBar"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ScrollView
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ScrollView>
+        <android.support.v7.widget.Toolbar
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:theme="@style/ToolBarTheme"
+            android:id="@+id/toolBarContacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary">
+
+            <com.pchmn.materialchips.ChipsInput
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:id="@+id/chips_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="30dp"
+                android:background="@color/colorPrimary"
+                android:gravity="end"
+                android:paddingRight="40dp"
+                android:textAlignment="textEnd"
+                app:chip_backgroundColor="@color/colorPrimaryDark"
+                app:chip_labelColor="@android:color/white"
+                app:hint="جستجو"
+                app:hintColor="@android:color/white"
+                app:maxRows="5" />
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_below="@+id/appBar"
+            android:layout_marginTop="20dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:id="@+id/recyclerViewContacts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp">
+        </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_marginRight="10dp"
+        android:id="@+id/fabContacts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/recyclerViewContacts"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="-20dp"
+        android:src="@drawable/ic_arrow_forward_black_24dp"
+        app:borderWidth="0dp"
+        app:elevation="4dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="10dp" />
+
+</RelativeLayout>

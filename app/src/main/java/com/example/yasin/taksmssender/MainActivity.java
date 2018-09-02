@@ -101,7 +101,10 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        }
 
         viewPager = findViewById(R.id.viewPagerMainAct);
         txtLableGroup = findViewById(R.id.txtLableGroup);
@@ -625,14 +628,7 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
 //
 
 //
-//    public void clickOnSend() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//        View view = getLayoutInflater().inflate(R.layout.choose_send_way, null);
-//        progressBar = view.findViewById(R.id.progressBarDialog);
-//        builder.setView(view);
-//        dialogChooseWay = builder.create();
-//        dialogChooseWay.show();
-//    }
+
 //
 //    public void SimCardWay(View view) {
 //        if (singleOrGroup == 1) {

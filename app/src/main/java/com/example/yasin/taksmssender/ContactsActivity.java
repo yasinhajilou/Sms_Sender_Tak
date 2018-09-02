@@ -80,13 +80,13 @@ public class ContactsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-//
-////        if (ContextCompat.checkSelfPermission(ContactsActivity.this , Manifest.permission.READ_CONTACTS )  == PackageManager.PERMISSION_GRANTED ){
-////            getContactList();
-////            setUpRecyclerView();
-////        }else {
-////            requestForReadContacts();
-////        }
+
+        if (ContextCompat.checkSelfPermission(ContactsActivity.this , Manifest.permission.READ_CONTACTS )  == PackageManager.PERMISSION_GRANTED ){
+            getContactList();
+//            setUpRecyclerView();
+        }else {
+            requestForReadContacts();
+        }
 
         mChipsInput.addChipsListener(new ChipsInput.ChipsListener() {
             @Override
@@ -165,127 +165,127 @@ public class ContactsActivity extends AppCompatActivity {
         });
     }
 
-//    private void requestForReadContacts() {
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(ContactsActivity.this , Manifest.permission.READ_CONTACTS)){
-//            Toast.makeText(this, "شما باید اجازه این دسترسی رو تایید کنید", Toast.LENGTH_LONG).show();
-//        }else {
-//            ActivityCompat.requestPermissions(ContactsActivity.this , new String[]{Manifest.permission.READ_CONTACTS}, Read_Contacts_Request_Code);
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        switch (requestCode){
-//            case Read_Contacts_Request_Code :
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                    getContactList();
-//                    setUpRecyclerView();
-//                }else {
-//
-//                }
-//        }
-//    }
-//
-//    private ArrayList<Contacts> getContacts(){
-//        ArrayList<Contacts> list = new ArrayList<>();
-//        StringBuilder builder = new StringBuilder();
-//        ContentResolver contentResolver = getContentResolver() ;
-//        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI , null , null , null , null);
-//
-//        if (cursor.getCount() > 0){
-//            while (cursor.moveToNext()){
-//                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-//                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//                int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
-//
-//                if (hasPhoneNumber>0){
-//                    Cursor cursor2 = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI ,
-//                            null , ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?" ,
-//                            new String[]{id} , null);
-//                    while (cursor2.moveToNext()){
-//                        String s = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                        builder.append("Contact : ").append(name).append(" , Phone Number : ").append(s).append("\n \n");
-//                        Contacts contacts = new Contacts();
-//                        contacts.setFullName(name);
-//                        contacts.setPhoneNumber(s);
-//                        list.add(contacts);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return list;
-//    }
-//
-//    public void setUpRecyclerView(){
-//        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewContacts);
-//        adapter = new RecyclerAdapterContacts(this , getContacts() , mChipsInput);
-//        recyclerView.setAdapter(adapter);
-//
-//        LinearLayoutManager manager = new LinearLayoutManager(this);
-//        manager.setOrientation(LinearLayoutManager.VERTICAL);
-//        recyclerView.setLayoutManager(manager);
-//        recyclerView.setAdapter(adapter);
-//
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
-//    }
-//
-//    private void getContactList() {
-//        Cursor phones = this.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,null,null, null);
-//
-//        // loop over all contacts
-//        if(phones != null) {
-//            while (phones.moveToNext()) {
-//                // get contact info
-//                String phoneNumber = null;
-//                String id = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
-//                String name = phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//                String avatarUriString = phones.getString(phones.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-//                Uri avatarUri = null;
-//                if(avatarUriString != null)
-//                    avatarUri = Uri.parse(avatarUriString);
-//
-//                // get phone number
-//                if (Integer.parseInt(phones.getString(phones.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-//                    Cursor pCur = this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//                            null,
-//                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[] { id }, null);
-//
-//                    while (pCur != null && pCur.moveToNext()) {
-//                        phoneNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                    }
-//
-//                    pCur.close();
-//
-//                }
-//
-//                ContactChip contactChip = new ContactChip(id, avatarUri, name, phoneNumber);
-//                // add contact to the list
-//                mContactList.add(contactChip);
-//            }
-//            phones.close();
-//        }
-//
-//        // pass contact list to chips input
-//        mChipsInput.setFilterableList(mContactList);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                onBackPressed();
-//                return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//    }
+    private void requestForReadContacts() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(ContactsActivity.this , Manifest.permission.READ_CONTACTS)){
+            Toast.makeText(this, "شما باید اجازه این دسترسی رو تایید کنید", Toast.LENGTH_LONG).show();
+        }else {
+            ActivityCompat.requestPermissions(ContactsActivity.this , new String[]{Manifest.permission.READ_CONTACTS}, Read_Contacts_Request_Code);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case Read_Contacts_Request_Code :
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    getContactList();
+                    setUpRecyclerView();
+                }else {
+
+                }
+        }
+    }
+
+    private ArrayList<Contacts> getContacts(){
+        ArrayList<Contacts> list = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
+        ContentResolver contentResolver = getContentResolver() ;
+        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI , null , null , null , null);
+
+        if (cursor.getCount() > 0){
+            while (cursor.moveToNext()){
+                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
+
+                if (hasPhoneNumber>0){
+                    Cursor cursor2 = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI ,
+                            null , ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?" ,
+                            new String[]{id} , null);
+                    while (cursor2.moveToNext()){
+                        String s = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        builder.append("Contact : ").append(name).append(" , Phone Number : ").append(s).append("\n \n");
+                        Contacts contacts = new Contacts();
+                        contacts.setFullName(name);
+                        contacts.setPhoneNumber(s);
+                        list.add(contacts);
+                    }
+                }
+            }
+        }
+
+        return list;
+    }
+
+    public void setUpRecyclerView(){
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewContacts);
+        adapter = new RecyclerAdapterContacts(this , getContacts() , mChipsInput);
+        recyclerView.setAdapter(adapter);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void getContactList() {
+        Cursor phones = this.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,null,null, null);
+
+        // loop over all contacts
+        if(phones != null) {
+            while (phones.moveToNext()) {
+                // get contact info
+                String phoneNumber = null;
+                String id = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                String avatarUriString = phones.getString(phones.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                Uri avatarUri = null;
+                if(avatarUriString != null)
+                    avatarUri = Uri.parse(avatarUriString);
+
+                // get phone number
+                if (Integer.parseInt(phones.getString(phones.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                    Cursor pCur = this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[] { id }, null);
+
+                    while (pCur != null && pCur.moveToNext()) {
+                        phoneNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    }
+
+                    pCur.close();
+
+                }
+
+                ContactChip contactChip = new ContactChip(id, avatarUri, name, phoneNumber);
+                // add contact to the list
+                mContactList.add(contactChip);
+            }
+            phones.close();
+        }
+
+        // pass contact list to chips input
+        mChipsInput.setFilterableList(mContactList);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }
 
 

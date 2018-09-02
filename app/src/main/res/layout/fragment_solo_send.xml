@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
+    android:paddingBottom="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+
     tools:context=".Fragment.SoloSendFragment">
 
     <LinearLayout
@@ -20,7 +23,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
             android:fontFamily="@font/bnazanin"
             android:text="پیام :"
             android:textColor="@color/colorPrimaryDark"
@@ -35,23 +39,43 @@
 
         </android.support.v7.widget.AppCompatSpinner>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:fontFamily="@font/bnazanin"
-            android:text="روش ارسال :"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp" />
-
         <android.support.v7.widget.AppCompatRadioButton
+            android:layout_marginTop="4dp"
+            android:id="@+id/radioContacts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="28dp"
             android:fontFamily="@font/bnazanin"
-            android:text="از طریق وارد کردن شماره" />
+            android:text="از طریق مخاطبین"
+            android:layout_marginEnd="28dp" />
+
+        <com.pchmn.materialchips.ChipsInput
+            app:chip_labelColor="@android:color/white"
+            app:chip_detailed_textColor="@android:color/white"
+            app:chip_backgroundColor="@color/colorPrimaryDark"
+            android:visibility="gone"
+            android:id="@+id/chips_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textDirection="rtl"
+            android:layoutDirection="rtl"
+            app:hint="نام مخاطب را اینجا وارد نمایید"
+            app:maxRows="3" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:layout_marginTop="20dp"
+            android:id="@+id/radioPhoneNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="28dp"
+            android:fontFamily="@font/bnazanin"
+            android:text="از طریق شماره تلفن"
+            android:layout_marginEnd="28dp" />
 
         <EditText
+            android:layout_marginTop="20dp"
+            android:enabled="false"
+            android:id="@+id/edtPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="28dp"
@@ -60,29 +84,13 @@
             android:hint="شماره تلفن"
             android:inputType="phone" />
 
-        <android.support.v7.widget.AppCompatRadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="28dp"
-            android:fontFamily="@font/bnazanin"
-            android:text="از طریق مخاطبین" />
-
-        <com.pchmn.materialchips.ChipsInput
-            android:id="@+id/chips_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusedByDefault="false"
-            android:hint="نام مخاطب"
-            android:textColor="#212121"
-            android:textColorHint="#757575"
-            app:hintColor="@color/colorAccent" />
     </LinearLayout>
 
     <Button
+        android:layout_alignParentBottom="true"
         android:id="@+id/btnSend"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="38dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
@@ -92,5 +100,4 @@
         android:text="ارسال"
         android:textColor="@color/colorBackground"
         android:textStyle="bold" />
-
 </RelativeLayout>

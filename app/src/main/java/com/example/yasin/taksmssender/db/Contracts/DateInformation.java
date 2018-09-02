@@ -25,7 +25,7 @@ public final class DateInformation {
 
         public static final String COLUMN_DAY = "Day";
 
-
+        public static final String COLUMN_PARENT_ID = "ParentId";
 
     }
 

@@ -24,6 +24,8 @@ public final class TimeInformationContract {
         public static final String COLUMN_MINUTE = "Minute";
 
         public static final String COLUMN_SECOND = "Second";
+
+        public static final String COLUMN_PARENT_ID = "ParentId";
     }
 
 }

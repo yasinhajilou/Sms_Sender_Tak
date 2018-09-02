@@ -95,6 +95,10 @@ public class SQLiteOpenHelperTak extends SQLiteOpenHelper {
             case 3:
                 db.execSQL("ALTER TABLE "+HistoryEntry.TABLE_NAME_HISTORY +" ADD COLUMN "+HistoryEntry.COLUMN_SEND_WAY +" INTEGER ");
                 break;
+//            case 4:
+//                db.execSQL("ALTER TABLE "+ TimeEntry.TABLE_NAME_TIME + " ADD COLUMN " + TimeEntry.COLUMN_PARENT_ID + " INTEGER NOT NULL");
+//                db.execSQL("ALTER TABLE " + DateEntry.TABLE_NAME_DATE + " ADD COLUMN " + DateEntry.COLUMN_PARENT_ID + " INTEGER NOT NULL");
+//                break;
         }
     }
 }

@@ -630,18 +630,6 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
 //
 
 //
-//    public void SimCardWay(View view) {
-//        if (singleOrGroup == 1) {
-//            sendSms();
-//        } else {
-//            if (singleOrGroup == 2) {
-////                sendGroupSms();
-//            }
-//        }
-//
-//        dialogChooseWay.dismiss();
-//    }
-//
 ////    private void sendGroupSms() {
 ////        try {
 ////            SQLiteOpenHelper db = new SQLiteOpenHelper(this);
@@ -835,117 +823,10 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
 ////    }
 //
 //
-//    //send Sms In offline Mode
-//    public void sendSms() {
-//        try {
+
 //
-//            SmsManager sms = SmsManager.getDefault();
-//            ArrayList<String> parts = sms.divideMessage(message);
-//            sms.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
-//            openHelperTak = new SQLiteOpenHelperTak(MainActivity.this);
-//            database = openHelperTak.getWritableDatabase();
-//
-//            String[] date = Utilities.getCurrentShamsidate().split("/");
-//
-//            //get Current Time
-//            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-//            Date dateTime = new Date();
-//            String currentTime = "" + dateFormat.format(dateTime);
-//            String[] time = currentTime.split(":");
-//
-//
-//            ContentValues cv = new ContentValues();
-//
-//            cv.put(DateInformation.DateEntry.COLUMN_YEAR, date[0]);
-//            cv.put(DateInformation.DateEntry.COLUMN_MONTH, date[1]);
-//            cv.put(DateInformation.DateEntry.COLUMN_DAY, date[2]);
-//            long idCurrentDate = database.insert(DateInformation.DateEntry.TABLE_NAME_DATE, null, cv);
-//            cv.clear();
-//
-////            database.up
-//
-//            cv.put(TimeInformationContract.TimeEntry.COLUMN_HOUR, time[0]);
-//            cv.put(TimeInformationContract.TimeEntry.COLUMN_MINUTE, time[1]);
-//            cv.put(TimeInformationContract.TimeEntry.COLUMN_SECOND, time[2]);
-//            long idCurrentTime = database.insert(TimeInformationContract.TimeEntry.TABLE_NAME_TIME, null, cv);
-//            cv.clear();
-//
-//            cv.put(SmsCounterContract.CounterEntry.COLUMN_DATE, idCurrentDate);
-//            cv.put(SmsCounterContract.CounterEntry.COLUMN_TIME, idCurrentTime);
-//            cv.put(SmsCounterContract.CounterEntry.COLUMN_SIMCARD_COUNTER, parts.size());
-//            cv.put(SmsCounterContract.CounterEntry.COLUMN_WIFI_COUNTER, 0);
-//            long idCurrentSmsCounter = database.insert(SmsCounterContract.CounterEntry.TABLE_NAME_COUNTER, null, cv);
-//            cv.clear();
-//
-//            getContactId(phoneNumber , idCurrentTime , idCurrentDate );
-//
-//            Toast.makeText(getApplicationContext(), "پیام ارسال شد",
-//                    Toast.LENGTH_LONG).show();
-//        } catch (Exception e) {
-//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//        }
-//
-////        writeNewContactAfterPermission();
-//    }
-//
-//    //getContactId whether exist or not
-//    public void getContactId(final String contactPhone , final long idCurrentTime , final long idCurrentDate ) {
-//        openHelperTak = new SQLiteOpenHelperTak(MainActivity.this);
-//        database = openHelperTak.getReadableDatabase();
-//
-//        Cursor cursor = database.rawQuery("SELECT " + PeopleInformationContract.PeopleEntry._ID + " FROM " + PeopleInformationContract.PeopleEntry.TABLE_NAME_PEOPLE + " WHERE " + PeopleInformationContract.PeopleEntry.COLUMN_PHONE_NUMBER + "==?",
-//                new String[]{contactPhone});
-//        int columnIndexId = cursor.getColumnIndex(PeopleInformationContract.PeopleEntry._ID);
-//        final long[] id = new long[1];
-//        if (cursor.moveToNext()) {
-//            cursor.moveToFirst();
-//            id[0] = cursor.getInt(columnIndexId);
-//            cursor.close();
-//            ContentValues cv = new ContentValues();
-//            cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SMS_INFORMATION, smsSelectedId);
-//            cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_TIME, idCurrentTime);
-//            cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_DATE, idCurrentDate);
-//            cv.put(SmsHistoryContract.HistoryEntry.COLUMN_TARGET, id[0]);
-//            cv.put(SmsHistoryContract.HistoryEntry.COLUMN_STATUS, SmsHistoryContract.HistoryEntry.status_sent);
-//            database.insert(SmsHistoryContract.HistoryEntry.TABLE_NAME_HISTORY, null, cv);
-//        } else {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//            View view1 = getLayoutInflater().inflate(R.layout.dialo_add_new_contact, null);
-//            builder.setCancelable(false);
-//            builder.setView(view1);
-//            Button btnDone = view1.findViewById(R.id.btnDoneAddContact);
-//            final EditText edtGetContactName = view1.findViewById(R.id.edtAddContactDialog);
-//            final AlertDialog dialog = builder.create();
-//            dialog.show();
-//            btnDone.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    contactsName = edtGetContactName.getText().toString();
-//
-//                    if (contactsName.length() != 0) {
-//                        database = openHelperTak.getWritableDatabase();
-//                        ContentValues cv = new ContentValues();
-//                        cv.put(PeopleInformationContract.PeopleEntry.COLUMN_FULL_NAME_PEOPLE, contactsName);
-//                        cv.put(PeopleInformationContract.PeopleEntry.COLUMN_PHONE_NUMBER, contactPhone);
-//                        id[0] = database.insert(PeopleInformationContract.PeopleEntry.TABLE_NAME_PEOPLE, null, cv);
-//                        cv.clear();
-//
-//                        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SMS_INFORMATION, smsSelectedId);
-//                        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_TIME, idCurrentTime);
-//                        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_DATE, idCurrentDate);
-//                        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_TARGET, id[0]);
-//                        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_STATUS, SmsHistoryContract.HistoryEntry.status_sent);
-//                        database.insert(SmsHistoryContract.HistoryEntry.TABLE_NAME_HISTORY, null, cv);
-//                        Toast.makeText(getApplicationContext(), "با موفقیت ثبت شد", Toast.LENGTH_LONG).show();
-//                        dialog.dismiss();
-//                    } else {
-//                        Toast.makeText(MainActivity.this, "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                }
-//            });
-//        };
-//    }
+
+
 //
 //    //write new contact if not exist
 ////    public void writeNewContactAfterPermission() {

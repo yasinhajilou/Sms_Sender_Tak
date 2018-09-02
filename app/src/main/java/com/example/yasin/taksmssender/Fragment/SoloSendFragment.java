@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatSpinner;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,20 +27,28 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.example.yasin.taksmssender.Class.Utilities;
 import com.example.yasin.taksmssender.ContactUsActivity;
 import com.example.yasin.taksmssender.ContactsActivity;
 import com.example.yasin.taksmssender.MainActivity;
 import com.example.yasin.taksmssender.Model.ContactChip;
 import com.example.yasin.taksmssender.Model.Contacts;
 import com.example.yasin.taksmssender.R;
+import com.example.yasin.taksmssender.db.Contracts.DateInformation;
 import com.example.yasin.taksmssender.db.Contracts.PeopleInformationContract;
 import com.example.yasin.taksmssender.db.Contracts.SmsContentContract;
+import com.example.yasin.taksmssender.db.Contracts.SmsCounterContract;
+import com.example.yasin.taksmssender.db.Contracts.SmsHistoryContract;
+import com.example.yasin.taksmssender.db.Contracts.TimeInformationContract;
 import com.example.yasin.taksmssender.db.SQLiteOpenHelper;
 import com.example.yasin.taksmssender.db.SQLiteOpenHelperTak;
 import com.pchmn.materialchips.ChipsInput;
 import com.pchmn.materialchips.model.ChipInterface;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -56,16 +65,22 @@ public class SoloSendFragment extends Fragment {
     SharedPreferences.Editor editor;
     int lastSize;
     List<String> categories;
-    AppCompatRadioButton radioPhoneNum , radioContacts;
+    AppCompatRadioButton radioPhoneNum, radioContacts;
     ChipsInput chipsInput;
     EditText edtPhoneNumber;
     String phoneNumber;
     Button btnSend;
-    int chipsLenght ;
+    int chipsLenght;
     List<ContactChip> contactsList;
     String contactName;
     String contactPhone;
     AlertDialog dialogChooseWay;
+    String message;
+    private Cursor cursorSmsContents;
+    String messageSubject ;
+    int messageId;
+    private static final int WIFI_WAY = 1;
+    private static final int SIMCARD_WAY = 0;
 
     public SoloSendFragment() {
         // Required empty public constructor
@@ -96,7 +111,22 @@ public class SoloSendFragment extends Fragment {
         spinnerSmsSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), ""+position, Toast.LENGTH_SHORT).show();
+                try {
+                    String selectedItem = parent.getItemAtPosition(position).toString();
+                    openHelperTak = new SQLiteOpenHelperTak(getContext());
+                    database = openHelperTak.getReadableDatabase();
+
+                    Cursor cursor = database.rawQuery("SELECT * FROM "+ SmsContentContract.SmsEntry.TABLE_NAME_SMS + " WHERE "+
+                            SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS + "==?" , new String[]{selectedItem});
+                    if (cursor.getCount() > 0){
+                        cursor.moveToFirst();
+                        message = cursor.getString(cursor.getColumnIndex(SmsContentContract.SmsEntry.COLUMN_CONTENT_SMS));
+                        messageId = cursor.getInt(cursor.getColumnIndex(SmsContentContract.SmsEntry._ID));
+                    }
+                    cursor.close();
+                }catch (Exception e){
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -127,7 +157,7 @@ public class SoloSendFragment extends Fragment {
         chipsInput.addChipsListener(new ChipsInput.ChipsListener() {
             @Override
             public void onChipAdded(ChipInterface chipInterface, int i) {
-                if (i>1){
+                if (i > 1) {
                     Toast.makeText(getContext(), "پیام فقط به مخاطب اول ارسال می شود", Toast.LENGTH_LONG).show();
                 }
                 chipsLenght = i;
@@ -135,7 +165,7 @@ public class SoloSendFragment extends Fragment {
 
             @Override
             public void onChipRemoved(ChipInterface chipInterface, int i) {
-                chipsLenght = i ;
+                chipsLenght = i;
             }
 
             @Override
@@ -146,29 +176,24 @@ public class SoloSendFragment extends Fragment {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!radioPhoneNum.isChecked() && !radioContacts.isChecked()){
+                if (!radioPhoneNum.isChecked() && !radioContacts.isChecked()) {
                     Toast.makeText(getContext(), "لطفا یک روش ارسال را انتخاب کنید", Toast.LENGTH_SHORT).show();
-                }else {
-
-
-                    if (radioContacts.isChecked()){
-
-                        if (chipsLenght == 1){
+                } else {
+                    if (radioContacts.isChecked()) {
+                        if (chipsLenght == 1) {
                             List<? extends ChipInterface> chipInfor = chipsInput.getSelectedChipList();
-                            contactPhone= chipInfor.get(0).getInfo();
-                            contactName= chipInfor.get(0).getLabel();
+                            contactPhone = chipInfor.get(0).getInfo();
+                            contactName = chipInfor.get(0).getLabel();
                             //show dialog
                             chooseWay(getContext());
-                        }else {
-                            if (chipsLenght > 1){
+                        } else {
+                            if (chipsLenght > 1) {
                                 Toast.makeText(getContext(), "بیش از یک مخاطب انتخاب شده!", Toast.LENGTH_LONG).show();
-                            }else {
+                            } else {
                                 Toast.makeText(getContext(), "مخاطبی انتخاب نشده.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
-
-
 
 
                 }
@@ -183,18 +208,18 @@ public class SoloSendFragment extends Fragment {
         openHelperTak = new SQLiteOpenHelperTak(context);
         database = openHelperTak.getReadableDatabase();
 
-        Cursor cursor = database.rawQuery("SELECT " + SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS + " FROM " + SmsContentContract.SmsEntry.TABLE_NAME_SMS, null);
+        cursorSmsContents = database.rawQuery("SELECT " + SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS + " FROM " + SmsContentContract.SmsEntry.TABLE_NAME_SMS, null);
         categories = new ArrayList<>();
-        int columnIndexSubject = cursor.getColumnIndex(SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS);
+        int columnIndexSubject = cursorSmsContents.getColumnIndex(SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS);
 
-        if (cursor.getCount() == 0) {
+        if (cursorSmsContents.getCount() == 0) {
             categories.add("اطلاعاتی برای نمایش وجود ندارد");
-            cursor.close();
+            cursorSmsContents.close();
         } else {
-            while (cursor.moveToNext()) {
-                categories.add(cursor.getString(columnIndexSubject));
+            while (cursorSmsContents.moveToNext()) {
+                categories.add(cursorSmsContents.getString(columnIndexSubject));
             }
-            cursor.close();
+            cursorSmsContents.close();
         }
 
         // Creating adapter for spinner
@@ -208,13 +233,13 @@ public class SoloSendFragment extends Fragment {
     }
 
     //get Contacts from database
-    public void getContacts(Context context){
+    public void getContacts(Context context) {
         openHelperTak = new SQLiteOpenHelperTak(context);
         database = openHelperTak.getReadableDatabase();
-        String query = "SELECT * FROM "+ PeopleInformationContract.PeopleEntry.TABLE_NAME_PEOPLE ;
-        Cursor cursor = database.rawQuery(query , null);
-        if (cursor.getCount() > 0){
-            while (cursor.moveToNext()){
+        String query = "SELECT * FROM " + PeopleInformationContract.PeopleEntry.TABLE_NAME_PEOPLE;
+        Cursor cursor = database.rawQuery(query, null);
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
                 int id =
                         cursor.getInt(cursor.getColumnIndex(PeopleInformationContract.PeopleEntry._ID));
                 String phoneNumberChips =
@@ -222,7 +247,7 @@ public class SoloSendFragment extends Fragment {
                 String fullName =
                         cursor.getString(cursor.getColumnIndex(PeopleInformationContract.PeopleEntry.COLUMN_FULL_NAME_PEOPLE));
 
-                ContactChip contactChip = new ContactChip(id+"", null, fullName, phoneNumberChips);
+                ContactChip contactChip = new ContactChip(id + "", null, fullName, phoneNumberChips);
                 // add contact to the list
                 contactsList.add(contactChip);
             }
@@ -241,7 +266,164 @@ public class SoloSendFragment extends Fragment {
         dialogChooseWay = builder.create();
         dialogChooseWay.show();
     }
+
+    //on click for simCard Button in alertDialog
+    public void SimCardWay(View view) {
+        sendSms();
+        dialogChooseWay.dismiss();
+    }
+
+    //send Sms In SimCard Mode
+    public void sendSms() {
+
+        try {
+            SmsManager sms = SmsManager.getDefault();
+            ArrayList<String> parts = sms.divideMessage(message);
+            sms.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
+
+            long peopleId = getContactId(phoneNumber);
+            long smsDateId = addSmsDate();
+            long smsTimeId = addSmsTime();
+
+            //add history record
+            long smsHistoryId = addSmsHistory(messageId , smsTimeId , smsDateId , peopleId  , SIMCARD_WAY);
+
+            //add counter record
+            long smsCounterId = addSmsCounter(smsDateId , smsTimeId , parts.size() , 0);
+
+            Toast.makeText(getContext(), "پیام ارسال شد",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+//        writeNewContactAfterPermission();
+    }
+
+
+    // add current 'date' in to the database and return record id that recently added
+    private long addSmsDate() {
+        openHelperTak = new SQLiteOpenHelperTak(getContext());
+        database = openHelperTak.getWritableDatabase();
+
+        //get current date in 3 index y/m/d
+        String[] date = Utilities.getCurrentShamsidate().split("/");
+
+        ContentValues values = new ContentValues();
+
+        values.put(DateInformation.DateEntry.COLUMN_YEAR, date[0]);
+        values.put(DateInformation.DateEntry.COLUMN_MONTH, date[1]);
+        values.put(DateInformation.DateEntry.COLUMN_DAY, date[2]);
+//        values.put(DateInformation.DateEntry.COLUMN_PARENT_ID, parentId);
+        return database.insert(DateInformation.DateEntry.TABLE_NAME_DATE, null, values);
+    }
+
+    // add current 'Time' in to the database and return record id that recently added
+    private long addSmsTime() {
+        openHelperTak = new SQLiteOpenHelperTak(getContext());
+        database = openHelperTak.getWritableDatabase();
+
+        //get Current Time
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date dateTime = new Date();
+        String currentTime = "" + dateFormat.format(dateTime);
+        String[] time = currentTime.split(":");
+
+
+        ContentValues cv = new ContentValues();
+
+//        cv.put(TimeInformationContract.TimeEntry.COLUMN_PARENT_ID, parentId);
+        cv.put(TimeInformationContract.TimeEntry.COLUMN_HOUR, time[0]);
+        cv.put(TimeInformationContract.TimeEntry.COLUMN_MINUTE, time[1]);
+        cv.put(TimeInformationContract.TimeEntry.COLUMN_SECOND, time[2]);
+
+        return database.insert(TimeInformationContract.TimeEntry.TABLE_NAME_TIME, null, cv);
+    }
+
+    // add sms information to the SmsCounter table and return that id
+    private long addSmsCounter(long idCurrentDate, long idCurrentTime, int SimCardCount, int WifiCount) {
+
+        openHelperTak = new SQLiteOpenHelperTak(getContext());
+        database = openHelperTak.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(SmsCounterContract.CounterEntry.COLUMN_DATE, idCurrentDate);
+        cv.put(SmsCounterContract.CounterEntry.COLUMN_TIME, idCurrentTime);
+        cv.put(SmsCounterContract.CounterEntry.COLUMN_SIMCARD_COUNTER, SimCardCount);
+        cv.put(SmsCounterContract.CounterEntry.COLUMN_WIFI_COUNTER, WifiCount);
+        return database.insert(SmsCounterContract.CounterEntry.TABLE_NAME_COUNTER, null, cv);
+    }
+
+    // add new Content in to the smsHistory table
+    private long addSmsHistory(int smsSelectedId ,long idCurrentTime , long idCurrentDate , long peopleId  , int sendWay){
+        openHelperTak = new SQLiteOpenHelperTak(getContext());
+        database = openHelperTak.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SMS_INFORMATION, smsSelectedId);
+        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_TIME, idCurrentTime);
+        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_DATE, idCurrentDate);
+        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_TARGET, peopleId );
+        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_STATUS, SmsHistoryContract.HistoryEntry.status_sent);
+        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_WAY ,sendWay );
+        return database.insert(SmsHistoryContract.HistoryEntry.TABLE_NAME_HISTORY, null, cv);
+    }
+
+    //getContactId in database
+    public long getContactId(final String phoneNumber) {
+        openHelperTak = new SQLiteOpenHelperTak(getContext());
+        database = openHelperTak.getReadableDatabase();
+
+        Cursor cursor = database.rawQuery("SELECT " + PeopleInformationContract.PeopleEntry._ID + " FROM " + PeopleInformationContract.PeopleEntry.TABLE_NAME_PEOPLE + " WHERE " + PeopleInformationContract.PeopleEntry.COLUMN_PHONE_NUMBER + "==?",
+                new String[]{phoneNumber});
+        int columnIndexId = cursor.getColumnIndex(PeopleInformationContract.PeopleEntry._ID);
+        final long[] id = new long[1];
+        if (cursor.moveToNext()) {
+            cursor.moveToFirst();
+            id[0] = cursor.getInt(columnIndexId);
+            cursor.close();
+        }
+
+        return id[0];
+    }
+
 }
 
 
+// else {
+//         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//         View view1 = getLayoutInflater().inflate(R.layout.dialo_add_new_contact, null);
+//         builder.setCancelable(false);
+//         builder.setView(view1);
+//         Button btnDone = view1.findViewById(R.id.btnDoneAddContact);
+//final EditText edtGetContactName = view1.findViewById(R.id.edtAddContactDialog);
+//final AlertDialog dialog = builder.create();
+//        dialog.show();
+//        btnDone.setOnClickListener(new View.OnClickListener() {
+//@Override
+//public void onClick(View v) {
+//        contactsName = edtGetContactName.getText().toString();
+//
+//        if (contactsName.length() != 0) {
+//        database = openHelperTak.getWritableDatabase();
+//        ContentValues cv = new ContentValues();
+//        cv.put(PeopleInformationContract.PeopleEntry.COLUMN_FULL_NAME_PEOPLE, contactsName);
+//        cv.put(PeopleInformationContract.PeopleEntry.COLUMN_PHONE_NUMBER, contactPhone);
+//        id[0] = database.insert(PeopleInformationContract.PeopleEntry.TABLE_NAME_PEOPLE, null, cv);
+//        cv.clear();
+//
+//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SMS_INFORMATION, smsSelectedId);
+//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_TIME, idCurrentTime);
+//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_DATE, idCurrentDate);
+//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_TARGET, id[0]);
+//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_STATUS, SmsHistoryContract.HistoryEntry.status_sent);
+//        database.insert(SmsHistoryContract.HistoryEntry.TABLE_NAME_HISTORY, null, cv);
+//        Toast.makeText(getApplicationContext(), "با موفقیت ثبت شد", Toast.LENGTH_LONG).show();
+//        dialog.dismiss();
+//        } else {
+//        Toast.makeText(MainActivity.this, "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        }
+//        });
 

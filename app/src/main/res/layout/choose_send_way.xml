@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ProgressBar
         android:indeterminate="true"
@@ -16,62 +18,69 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="22sp"
         android:textAlignment="center"
-        android:text="از چه طریقی تمایل به ارسال sms دارید؟"
+        android:text="از چه طریقی تمایل به ارسال پیام دارید؟"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <ImageView
-        android:onClick="SimCardWay"
-        android:layout_alignParentLeft="true"
-        android:id="@+id/imgSimCard"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/txtQuestion"
-        android:src="@drawable/simcard"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="20dp"
-        android:layout_alignParentStart="true" />
-    <TextView
-        android:onClick="SimCardWay"
-        android:layout_alignParentLeft="true"
-        android:fontFamily="@font/lalezar"
-        android:textColor="@android:color/black"
-        android:textAlignment="center"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="2dp"
-        android:layout_below="@+id/imgSimCard"
-        android:id="@+id/txtSimCard"
-        android:text="سیم کارت"
-        android:textSize="20sp"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true" />
-    <ImageView
-        android:onClick="InternetWay"
-        android:id="@+id/imgWifi"
-        android:src="@drawable/wifi"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/txtQuestion"
-        android:layout_alignParentRight="true"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp" />
-    <TextView
-        android:onClick="InternetWay"
-        android:id="@+id/txtInternet"
-        android:layout_marginRight="20dp"
-        android:textAlignment="center"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="2dp"
-        android:layout_below="@+id/imgWifi"
-        android:fontFamily="@font/lalezar"
-        android:textColor="@android:color/black"
-        android:text="اینترنت"
-        android:textSize="20sp"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp" />
+    
+
+        <ImageView
+            android:layout_below="@+id/txtQuestion"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:onClick="SimCardWay"
+            android:id="@+id/imgSimCard"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/simcard"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="20dp" />
+        <TextView
+            android:onClick="SimCardWay"
+            android:layout_alignParentLeft="true"
+            android:fontFamily="@font/lalezar"
+            android:textColor="@android:color/black"
+            android:textAlignment="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="2dp"
+            android:layout_below="@+id/imgSimCard"
+            android:id="@+id/txtSimCard"
+            android:text="سیم کارت"
+            android:textSize="20sp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="20dp" />
+
+
+        <ImageView
+            android:layout_alignParentEnd="true"
+            android:id="@+id/imgWifi"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/txtQuestion"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:onClick="InternetWay"
+            android:src="@drawable/wifi"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:id="@+id/txtInternet"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/imgWifi"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/lalezar"
+            android:onClick="InternetWay"
+            android:text="اینترنت"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
 </RelativeLayout>

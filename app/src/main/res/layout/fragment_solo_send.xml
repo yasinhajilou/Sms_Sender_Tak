@@ -7,7 +7,6 @@
     android:paddingBottom="20dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-
     tools:context=".Fragment.SoloSendFragment">
 
     <LinearLayout
@@ -19,27 +18,43 @@
         android:layoutDirection="rtl"
         android:orientation="vertical"
         tools:targetApi="jelly_bean_mr1">
-
-        <TextView
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layoutDirection="ltr"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:fontFamily="@font/bnazanin"
-            android:text="پیام :"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp" />
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtLableMess"
+                android:layout_marginRight="8dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bnazanin"
+                android:text="پیام :"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp" />
 
-        <android.support.v7.widget.AppCompatSpinner
-            android:id="@+id/spinnerSmsSubject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
+            <android.support.v7.widget.AppCompatSpinner
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/spinnerSmsSubject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_toLeftOf="@+id/txtLableMess"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/txtLableMess"
+                android:layout_marginStart="4dp">
+            </android.support.v7.widget.AppCompatSpinner>
+        </RelativeLayout>
 
-        </android.support.v7.widget.AppCompatSpinner>
+
 
         <android.support.v7.widget.AppCompatRadioButton
+            android:textSize="18sp"
             android:layout_marginTop="4dp"
             android:id="@+id/radioContacts"
             android:layout_width="wrap_content"
@@ -50,6 +65,8 @@
             android:layout_marginEnd="28dp" />
 
         <com.pchmn.materialchips.ChipsInput
+            android:layoutDirection="ltr"
+            android:textDirection="ltr"
             app:chip_labelColor="@android:color/white"
             app:chip_detailed_textColor="@android:color/white"
             app:chip_backgroundColor="@color/colorPrimaryDark"
@@ -57,12 +74,11 @@
             android:id="@+id/chips_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textDirection="rtl"
-            android:layoutDirection="rtl"
-            app:hint="نام مخاطب را اینجا وارد نمایید"
+            app:hint="نام یا شماره تلفن مخاطب را اینجا وارد نمایید"
             app:maxRows="3" />
 
         <android.support.v7.widget.AppCompatRadioButton
+            android:textSize="18sp"
             android:layout_marginTop="20dp"
             android:id="@+id/radioPhoneNum"
             android:layout_width="wrap_content"
@@ -86,6 +102,14 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:visibility="invisible"
+        android:id="@+id/progressSoloSend"
+        android:layout_marginBottom="18dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/btnSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <Button
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSend"

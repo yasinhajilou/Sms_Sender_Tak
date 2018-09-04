@@ -5,18 +5,24 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatSpinner;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +30,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andexert.library.RippleView;
 import com.example.yasin.taksmssender.Class.Utilities;
 import com.example.yasin.taksmssender.ContactUsActivity;
 import com.example.yasin.taksmssender.ContactsActivity;
@@ -52,6 +62,11 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,14 +88,14 @@ public class SoloSendFragment extends Fragment {
     int chipsLenght;
     List<ContactChip> contactsList;
     String contactName;
-    String contactPhone;
     AlertDialog dialogChooseWay;
     String message;
-    private Cursor cursorSmsContents;
-    String messageSubject ;
+    String messageSubject;
     int messageId;
-    private static final int WIFI_WAY = 1;
-    private static final int SIMCARD_WAY = 0;
+    ProgressBar progressBar;
+    private static final int INTERNET_WAY = 1;
+    private static final int SIM_CARD_WAY = 0;
+    int lengthOfMes;
 
     public SoloSendFragment() {
         // Required empty public constructor
@@ -100,6 +115,7 @@ public class SoloSendFragment extends Fragment {
         edtPhoneNumber = view.findViewById(R.id.edtPhoneNumber);
         chipsInput = view.findViewById(R.id.chips_input);
         btnSend = view.findViewById(R.id.btnSend);
+        progressBar = view.findViewById(R.id.progressSoloSend);
 
         chipsInput.setVisibility(View.GONE);
         contactsList = new ArrayList<>();
@@ -116,15 +132,15 @@ public class SoloSendFragment extends Fragment {
                     openHelperTak = new SQLiteOpenHelperTak(getContext());
                     database = openHelperTak.getReadableDatabase();
 
-                    Cursor cursor = database.rawQuery("SELECT * FROM "+ SmsContentContract.SmsEntry.TABLE_NAME_SMS + " WHERE "+
-                            SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS + "==?" , new String[]{selectedItem});
-                    if (cursor.getCount() > 0){
+                    Cursor cursor = database.rawQuery("SELECT * FROM " + SmsContentContract.SmsEntry.TABLE_NAME_SMS + " WHERE " +
+                            SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS + "==?", new String[]{selectedItem});
+                    if (cursor.getCount() > 0) {
                         cursor.moveToFirst();
                         message = cursor.getString(cursor.getColumnIndex(SmsContentContract.SmsEntry.COLUMN_CONTENT_SMS));
                         messageId = cursor.getInt(cursor.getColumnIndex(SmsContentContract.SmsEntry._ID));
                     }
                     cursor.close();
-                }catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -173,6 +189,8 @@ public class SoloSendFragment extends Fragment {
 
             }
         });
+
+
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,7 +200,7 @@ public class SoloSendFragment extends Fragment {
                     if (radioContacts.isChecked()) {
                         if (chipsLenght == 1) {
                             List<? extends ChipInterface> chipInfor = chipsInput.getSelectedChipList();
-                            contactPhone = chipInfor.get(0).getInfo();
+                            phoneNumber = chipInfor.get(0).getInfo();
                             contactName = chipInfor.get(0).getLabel();
                             //show dialog
                             chooseWay(getContext());
@@ -191,6 +209,15 @@ public class SoloSendFragment extends Fragment {
                                 Toast.makeText(getContext(), "بیش از یک مخاطب انتخاب شده!", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getContext(), "مخاطبی انتخاب نشده.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }else {
+                        if (radioPhoneNum.isChecked()){
+                            phoneNumber = edtPhoneNumber.getText().toString();
+                            if (phoneNumber.length() == 11){
+                                chooseWay(getContext());
+                            }else {
+                                Toast.makeText(getContext(), "تلفن وارد شده صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -208,7 +235,7 @@ public class SoloSendFragment extends Fragment {
         openHelperTak = new SQLiteOpenHelperTak(context);
         database = openHelperTak.getReadableDatabase();
 
-        cursorSmsContents = database.rawQuery("SELECT " + SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS + " FROM " + SmsContentContract.SmsEntry.TABLE_NAME_SMS, null);
+        Cursor cursorSmsContents = database.rawQuery("SELECT " + SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS + " FROM " + SmsContentContract.SmsEntry.TABLE_NAME_SMS, null);
         categories = new ArrayList<>();
         int columnIndexSubject = cursorSmsContents.getColumnIndex(SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS);
 
@@ -230,6 +257,21 @@ public class SoloSendFragment extends Fragment {
 
         // attaching data adapter to spinner
         spinnerSmsSubject.setAdapter(dataAdapter);
+    }
+
+    //check network availability
+    @NonNull
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     //get Contacts from database
@@ -259,18 +301,202 @@ public class SoloSendFragment extends Fragment {
     }
 
     //show dialog view for choosing send way
-    public void chooseWay(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    public void chooseWay(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = getLayoutInflater().inflate(R.layout.choose_send_way, null);
+        ImageView imgSimcard = view.findViewById(R.id.imgSimCard);
+        ImageView imgInternet = view.findViewById(R.id.imgWifi);
+        TextView txtSim = view.findViewById(R.id.txtSimCard);
+        TextView txtInternet = view.findViewById(R.id.txtInternet);
         builder.setView(view);
         dialogChooseWay = builder.create();
         dialogChooseWay.show();
+
+
+        txtSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimCardWay();
+                dialogChooseWay.dismiss();
+            }
+        });
+
+        imgSimcard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimCardWay();
+                dialogChooseWay.dismiss();
+            }
+        });
+
+
+        txtInternet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InternetWay();
+                dialogChooseWay.dismiss();
+            }
+        });
+
+
+
+        imgInternet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InternetWay();
+                dialogChooseWay.dismiss();
+            }
+        });
+
     }
 
     //on click for simCard Button in alertDialog
-    public void SimCardWay(View view) {
+    public void SimCardWay() {
         sendSms();
         dialogChooseWay.dismiss();
+    }
+
+    //this method is for sending in online moode
+    public void InternetWay() {
+        progressBar.setVisibility(View.VISIBLE);
+        if (isNetworkAvailable()) {
+            isBlackList handler = new isBlackList();
+            String url = "http://owjpayam.ir/ajax.php?page=check_is_number_in_blacklist";
+            handler.execute(url);
+        } else {
+            dialogChooseWay.dismiss();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("عدم اتصال");
+            builder.setMessage("این دستگاه به اینترنت وصل نمی باشد.");
+            builder.setIcon(R.drawable.cancel);
+            builder.setNeutralButton("باشه", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        }
+    }
+
+
+    //send sms in online mood
+    public class sendSmsOnline extends AsyncTask<String, String, String> {
+
+        OkHttpClient client = new OkHttpClient();
+
+        @Override
+        protected String doInBackground(String... params) {
+            String username = "9365174613";
+            String password = "5529962718";
+            String lineNumber = "30005633233983";
+            params[0] += "user=" + username + "&pass=" + password + "&text=" + message + "&to=" + phoneNumber + "&lineNo=" + lineNumber;
+
+
+            Request.Builder builder = new Request.Builder();
+            builder.url(params[0]);
+            Request request = builder.build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().string();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressBar.setVisibility(View.INVISIBLE);
+            SmsManager sms = SmsManager.getDefault();
+            ArrayList<String> parts = sms.divideMessage(message);
+
+            long peopleId = getContactId(phoneNumber);
+            long smsDateId = addSmsDate();
+            long smsTimeId = addSmsTime();
+
+            //add history record
+            long smsHistoryId = addSmsHistory(messageId, smsTimeId, smsDateId, peopleId, INTERNET_WAY);
+
+            //add counter record
+            long smsCounterId = addSmsCounter(smsDateId, smsTimeId, parts.size(), 0);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(s);
+            builder.setNeutralButton("باشه", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+
+
+        }
+    }
+
+
+    //check phone number is in black list or not
+    public class isBlackList extends AsyncTask<String, String, String> {
+
+        OkHttpClient client = new OkHttpClient();
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            RequestBody body = new FormBody.Builder()
+                    .add("note", phoneNumber)
+                    .add("regbtn", "چک کردن وضعیت شماره ها")
+                    .build();
+            Log.d("RequestBody", "was made ");
+
+            Request request = new Request.Builder()
+                    .url(params[0])
+                    .post(body)
+                    .build();
+
+
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().string();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            lengthOfMes = s.length();
+            dialogChooseWay.dismiss();
+            if (lengthOfMes == 60) {
+                sendSmsOnline online = new sendSmsOnline();
+                String url_send_sms = "http://ip.sms.ir/SendMessage.ashx?";
+                online.execute(url_send_sms);
+            } else {
+                progressBar.setVisibility(View.INVISIBLE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("لیست سیاه مخابرات");
+                builder.setMessage("متاسفانه این خط در در لیست سیاه می باشد،آیا مایلید که از طریق سیم کارت ارسال نمایید؟");
+                builder.setIcon(R.drawable.warning);
+                builder.setPositiveButton("بله", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendSms();
+                    }
+                });
+                builder.setNegativeButton("خیر", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        }
     }
 
     //send Sms In SimCard Mode
@@ -286,10 +512,10 @@ public class SoloSendFragment extends Fragment {
             long smsTimeId = addSmsTime();
 
             //add history record
-            long smsHistoryId = addSmsHistory(messageId , smsTimeId , smsDateId , peopleId  , SIMCARD_WAY);
+            long smsHistoryId = addSmsHistory(messageId, smsTimeId, smsDateId, peopleId, SIM_CARD_WAY);
 
             //add counter record
-            long smsCounterId = addSmsCounter(smsDateId , smsTimeId , parts.size() , 0);
+            long smsCounterId = addSmsCounter(smsDateId, smsTimeId, parts.size(), 0);
 
             Toast.makeText(getContext(), "پیام ارسال شد",
                     Toast.LENGTH_LONG).show();
@@ -355,7 +581,7 @@ public class SoloSendFragment extends Fragment {
     }
 
     // add new Content in to the smsHistory table
-    private long addSmsHistory(int smsSelectedId ,long idCurrentTime , long idCurrentDate , long peopleId  , int sendWay){
+    private long addSmsHistory(int smsSelectedId, long idCurrentTime, long idCurrentDate, long peopleId, int sendWay) {
         openHelperTak = new SQLiteOpenHelperTak(getContext());
         database = openHelperTak.getWritableDatabase();
 
@@ -363,13 +589,13 @@ public class SoloSendFragment extends Fragment {
         cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SMS_INFORMATION, smsSelectedId);
         cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_TIME, idCurrentTime);
         cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_DATE, idCurrentDate);
-        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_TARGET, peopleId );
+        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_TARGET, peopleId);
         cv.put(SmsHistoryContract.HistoryEntry.COLUMN_STATUS, SmsHistoryContract.HistoryEntry.status_sent);
-        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_WAY ,sendWay );
+        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_WAY, sendWay);
         return database.insert(SmsHistoryContract.HistoryEntry.TABLE_NAME_HISTORY, null, cv);
     }
 
-    //getContactId in database
+    //getContactId in database whether exist or not(made that)
     public long getContactId(final String phoneNumber) {
         openHelperTak = new SQLiteOpenHelperTak(getContext());
         database = openHelperTak.getReadableDatabase();
@@ -382,48 +608,40 @@ public class SoloSendFragment extends Fragment {
             cursor.moveToFirst();
             id[0] = cursor.getInt(columnIndexId);
             cursor.close();
-        }
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            View view1 = getLayoutInflater().inflate(R.layout.dialo_add_new_contact, null);
+            builder.setCancelable(false);
+            builder.setView(view1);
+            Button btnDone = view1.findViewById(R.id.btnDoneAddContact);
+            final EditText edtGetContactName = view1.findViewById(R.id.edtAddContactDialog);
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+            btnDone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String contactsName = edtGetContactName.getText().toString();
 
+                    if (contactsName.length() != 0) {
+                        database = openHelperTak.getWritableDatabase();
+                        ContentValues cv = new ContentValues();
+                        cv.put(PeopleInformationContract.PeopleEntry.COLUMN_FULL_NAME_PEOPLE, contactsName);
+                        cv.put(PeopleInformationContract.PeopleEntry.COLUMN_PHONE_NUMBER, phoneNumber);
+                        id[0] = database.insert(PeopleInformationContract.PeopleEntry.TABLE_NAME_PEOPLE, null, cv);
+                        cv.clear();
+                        Toast.makeText(getContext() , "با موفقیت ثبت شد", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(getContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+        }
         return id[0];
     }
-
 }
 
 
-// else {
-//         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//         View view1 = getLayoutInflater().inflate(R.layout.dialo_add_new_contact, null);
-//         builder.setCancelable(false);
-//         builder.setView(view1);
-//         Button btnDone = view1.findViewById(R.id.btnDoneAddContact);
-//final EditText edtGetContactName = view1.findViewById(R.id.edtAddContactDialog);
-//final AlertDialog dialog = builder.create();
-//        dialog.show();
-//        btnDone.setOnClickListener(new View.OnClickListener() {
-//@Override
-//public void onClick(View v) {
-//        contactsName = edtGetContactName.getText().toString();
-//
-//        if (contactsName.length() != 0) {
-//        database = openHelperTak.getWritableDatabase();
-//        ContentValues cv = new ContentValues();
-//        cv.put(PeopleInformationContract.PeopleEntry.COLUMN_FULL_NAME_PEOPLE, contactsName);
-//        cv.put(PeopleInformationContract.PeopleEntry.COLUMN_PHONE_NUMBER, contactPhone);
-//        id[0] = database.insert(PeopleInformationContract.PeopleEntry.TABLE_NAME_PEOPLE, null, cv);
-//        cv.clear();
-//
-//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SMS_INFORMATION, smsSelectedId);
-//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_TIME, idCurrentTime);
-//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_SEND_DATE, idCurrentDate);
-//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_TARGET, id[0]);
-//        cv.put(SmsHistoryContract.HistoryEntry.COLUMN_STATUS, SmsHistoryContract.HistoryEntry.status_sent);
-//        database.insert(SmsHistoryContract.HistoryEntry.TABLE_NAME_HISTORY, null, cv);
-//        Toast.makeText(getApplicationContext(), "با موفقیت ثبت شد", Toast.LENGTH_LONG).show();
-//        dialog.dismiss();
-//        } else {
-//        Toast.makeText(MainActivity.this, "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
-//        }
-//
-//        }
-//        });
+
 

@@ -2,6 +2,7 @@ package com.example.yasin.taksmssender.Fragment;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -44,12 +45,12 @@ public class EditSmsFragment extends Fragment {
     String contentLength;
     AlertDialog dialog;
     AlertDialog.Builder builderAlert;
-    SQLiteOpenHelper database ;
     RecyclerAdapterSms adapter ;
 
     public EditSmsFragment() {
         // Required empty public constructor
     }
+
 
 
     @Override
@@ -61,7 +62,7 @@ public class EditSmsFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMain);
 
 
-        setUpRecyclerView();
+        setUpRecyclerView(getContext());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -113,26 +114,34 @@ public class EditSmsFragment extends Fragment {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String subject = edtSubject.getText().toString();
-                        String content = edtContent.getText().toString();
+                        String subject = edtSubject.getText().toString().trim();
+                        String content = edtContent.getText().toString().trim();
                         long check;
                         if (subject.isEmpty() || content.isEmpty()){
                             Toast.makeText(view.getContext(), "فیلدی نمی تواند خالی باشد.", Toast.LENGTH_SHORT).show();
                         }else {
                              SQLiteOpenHelperTak openHelperTak = new SQLiteOpenHelperTak(view.getContext());
-                            SQLiteDatabase database1 = openHelperTak.getWritableDatabase();
-                            ContentValues cv = new ContentValues();
-                            cv.put(SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS , subject);
-                            cv.put(SmsContentContract.SmsEntry.COLUMN_CONTENT_SMS , content);
-                            check = database1.insert(SmsContentContract.SmsEntry.TABLE_NAME_SMS , null , cv);
-                            if (check>0){
-                                setUpRecyclerView();
-                                Toast.makeText(view.getContext(), "اطلاعات با موفقیت ذخیره شد.", Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(view.getContext(), "خطایی رخ داده است.", Toast.LENGTH_SHORT).show();
-                            }
+                             SQLiteDatabase database = openHelperTak.getReadableDatabase();
+                             Cursor cursor = database.rawQuery("SELECT * FROM " + SmsContentContract.SmsEntry.TABLE_NAME_SMS + " WHERE "+ SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS+ " ==?",new String[]{subject});
+                             if (cursor.moveToNext()){
+                                 Toast.makeText(getContext(), "این عنوان تکراریست", Toast.LENGTH_SHORT).show();
+                             }else {
+                                 SQLiteDatabase database1 = openHelperTak.getWritableDatabase();
+                                 ContentValues cv = new ContentValues();
+                                 cv.put(SmsContentContract.SmsEntry.COLUMN_SUBJECT_SMS , subject);
+                                 cv.put(SmsContentContract.SmsEntry.COLUMN_CONTENT_SMS , content);
+                                 check = database1.insert(SmsContentContract.SmsEntry.TABLE_NAME_SMS , null , cv);
+                                 if (check>0){
+                                     setUpRecyclerView(getContext());
+                                     Toast.makeText(view.getContext(), "اطلاعات با موفقیت ذخیره شد.", Toast.LENGTH_SHORT).show();
+                                 }else {
+                                     Toast.makeText(view.getContext(), "خطایی رخ داده است.", Toast.LENGTH_SHORT).show();
+                                 }
+                                 dialog.dismiss();
+                             }
+
                         }
-                        dialog.dismiss();
+
                     }
                 });
                 builderAlert.setView(mView);
@@ -145,15 +154,15 @@ public class EditSmsFragment extends Fragment {
 
 
     //setUp for recyclerView
-    public void setUpRecyclerView(){
-        SQLiteOpenHelperTak openHelperTak = new SQLiteOpenHelperTak(getContext());
+    public void setUpRecyclerView(Context context){
+        SQLiteOpenHelperTak openHelperTak = new SQLiteOpenHelperTak(context);
         SQLiteDatabase database = openHelperTak.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + SmsContentContract.SmsEntry.TABLE_NAME_SMS ,null);
         if (cursor.getCount() > 0){
-            adapter = new RecyclerAdapterSms(getContext() , LandScape.getData(getContext()));
+            adapter = new RecyclerAdapterSms(context, LandScape.getData(getContext()));
             recyclerView.setAdapter(adapter);
 
-            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            LinearLayoutManager manager = new LinearLayoutManager(context);
             manager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(manager);
             recyclerView.setAdapter(adapter);

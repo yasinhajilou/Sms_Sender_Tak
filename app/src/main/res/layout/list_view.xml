@@ -19,14 +19,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageView
-                android:tint="@android:color/darker_gray"
+                android:tint="@android:color/holo_red_dark"
                 android:src="@drawable/baseline_delete_black_36"
                 android:id="@+id/img_row_delete"
                 android:layout_width="26dp"
                 android:layout_height="36dp"
                 android:layout_margin="4dp"/>
             <ImageView
-                android:tint="@android:color/darker_gray"
+                android:tint="@color/colorPrimaryDark"
                 android:src="@drawable/baseline_edit_black_36"
                 android:id="@+id/img_row_edit"
                 android:layout_width="26dp"

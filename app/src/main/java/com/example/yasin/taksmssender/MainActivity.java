@@ -22,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.PopupMenu;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
@@ -32,11 +33,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.yasin.taksmssender.Adapter.FragmentAdapterSmsWay;
 import com.example.yasin.taksmssender.Class.Utilities;
 import com.example.yasin.taksmssender.Model.Contacts;
@@ -67,7 +70,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
-public class MainActivity extends AppCompatActivity implements  EasyPermissions.PermissionCallbacks {
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     ProgressBar progressBarMain;
     String[] arrayPhone;
@@ -95,8 +98,11 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
     int ContactPhoneSize;
     int lastSize;
     ViewPager viewPager;
-    TextView txtLableSolo , txtLableGroup;
+    TextView txtLableSolo, txtLableGroup;
     int firstTime;
+    private LottieAnimationView animationView;
+    ImageButton imgPopup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
         viewPager = findViewById(R.id.viewPagerMainAct);
         txtLableGroup = findViewById(R.id.txtLableGroup);
         txtLableSolo = findViewById(R.id.txtLableSolo);
+        imgPopup = findViewById(R.id.imgBtnPopupMenu);
+
 
         preferences = getApplicationContext().getSharedPreferences("SmsHistoryCounter", MODE_PRIVATE);
         editor = preferences.edit();
@@ -155,10 +163,30 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
             }
         });
 
+        imgPopup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(MainActivity.this, imgPopup);
+                popupMenu.getMenuInflater().inflate(R.menu.popup_menu_main, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int itemId = item.getItemId();
+                        switch (itemId) {
+                            case R.id.menuEdit:
+                                Intent intent = new Intent(MainActivity.this , EditActivity.class);
+                                startActivity(intent);
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
 
         //Forward old database information to new
         passOldDataToNew(MainActivity.this);
-
 
 
         //get Read and write and send sms permission
@@ -221,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
 
     //this method task is changing style of two text view that showed view pager status
     private void changeLables(int position) {
-        switch (position){
+        switch (position) {
             case 0:
                 txtLableSolo.setTextSize(26);
                 txtLableGroup.setTextSize(20);
@@ -283,7 +311,6 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
     }
 
 
-
     //this method make contacts in database or update that
     private void setUpOrUpdateInternallContacts(Context context) {
 
@@ -326,9 +353,9 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
     //this method task is passing old database (Sms Contents) to new Database
     private void passOldDataToNew(Context context) {
         //check for is first time app ran
-        firstTime = preferences.getInt("first_time" , 0);
+        firstTime = preferences.getInt("first_time", 0);
         editor.commit();
-        if (firstTime == 0){
+        if (firstTime == 0) {
             //sending old table information to new table
             SQLiteOpenHelperTak openHelperTak = new SQLiteOpenHelperTak(context);
             SQLiteOpenHelper openHelper = new SQLiteOpenHelper(context);
@@ -344,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements  EasyPermissions.
                 }
                 fullData.close();
             }
-            editor.putInt("first_time" , 1 );
+            editor.putInt("first_time", 1);
             editor.commit();
         }
 

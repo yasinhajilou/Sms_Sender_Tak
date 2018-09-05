@@ -51,6 +51,7 @@ public class EditActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
 
 
+
         tabLayout = (TabLayout) findViewById(R.id.tabLayOutSms);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -75,4 +76,7 @@ public class EditActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void sayHi(){
+        viewPager.setAdapter(adapter);
+    }
 }

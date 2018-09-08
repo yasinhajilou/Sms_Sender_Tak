@@ -364,6 +364,7 @@ public class SoloSendFragment extends Fragment {
             String url = "http://owjpayam.ir/ajax.php?page=check_is_number_in_blacklist";
             handler.execute(url);
         } else {
+            progressBar.setVisibility(View.INVISIBLE);
             dialogChooseWay.dismiss();
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("عدم اتصال");
@@ -512,7 +513,7 @@ public class SoloSendFragment extends Fragment {
             long smsTimeId = addSmsTime();
 
             //add history record
-            long smsHistoryId = addSmsHistory(messageId, smsTimeId, smsDateId, peopleId, SIM_CARD_WAY);
+            long smsHistoryId = addSmsHistory(messageId, smsTimeId, smsDateId, peopleId, SmsHistoryContract.HistoryEntry.sim);
 
             //add counter record
             long smsCounterId = addSmsCounter(smsDateId, smsTimeId, parts.size(), 0);

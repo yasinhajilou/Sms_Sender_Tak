@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.yasin.taksmssender.Adapter.RecyclerAdapterSms;
 import com.example.yasin.taksmssender.Adapter.RecyclerAdapterSmsHistory;
@@ -33,7 +34,12 @@ public class SmsHistoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sms_history, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewSmsHistoryFragment);
-        if (SmsHistory.getData(getContext()).size() != 0){
+        TextView textView = view.findViewById(R.id.txtNoticeHistory);
+
+        int dataLen = SmsHistory.getData(getContext()).size();
+        if ( dataLen > 0){
+            textView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
             RecyclerAdapterSmsHistory adapter = new RecyclerAdapterSmsHistory(getContext() , SmsHistory.getData(getContext()));
             recyclerView.setAdapter(adapter);
             recyclerView.smoothScrollToPosition(0);

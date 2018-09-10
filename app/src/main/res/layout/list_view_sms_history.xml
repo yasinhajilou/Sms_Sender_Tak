@@ -1,70 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
+    android:layout_margin="14dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/txtSmsContent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/bnazanin"
-            android:maxLines="1"
-            android:padding="7dp"
-            android:text="اسم ماه"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/txtSmsDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="4dp"
-            android:fontFamily="@font/bnazanin"
-            android:text="1397/20/20"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_alignParentTop="true"
-            android:id="@+id/txtSmsTime"
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:id="@+id/txtSmsContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:fontFamily="@font/bnazanin"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:text="subject"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:padding="2dp"
+                android:id="@+id/txtSmsDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bnazanin"
+                android:text="1397/20/20"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/txtSmsTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bnazanin"
+                android:text="20:33:45"
+                android:textSize="17sp" />
+
+            <TextView
+                android:padding="2dp"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                android:id="@+id/txtSmsTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bnazanin"
+                android:text="فلانی" />
+
+            <ImageView
+                android:id="@+id/imgViewWay"
+                android:padding="2dp"
+                android:src="@drawable/simcard"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/bnazanin"
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layoutDirection="rtl"
+            android:orientation="vertical"
             android:layout_alignParentRight="true"
-            android:fontFamily="@font/bnazanin"
-            android:text="20:33:45"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/txtSmsToDes"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtSmsContent"
-            android:layout_toRightOf="@+id/txtSmsTo"
-            android:fontFamily="@font/bnazanin"
-            android:text="ارسال شده به: "
-            android:textSize="16sp" />
+            android:layout_height="wrap_content">
+            <TextView
 
-        <TextView
-            android:textSize="16sp"
-            android:id="@+id/txtSmsTo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/txtSmsContent"
-            android:fontFamily="@font/bnazanin"
-            android:text="09102771654" />
-        <View
-            android:background="@android:color/darker_gray"
-            android:layout_marginTop="4dp"
-            android:layout_below="@id/txtSmsTo"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+                android:padding="2dp"
+                android:text="پیام:"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="17sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:padding="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="17sp"
+                android:text="تاریخ:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:padding="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="17sp"
+                android:text="ساعت:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:padding="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp"
+                android:text="ارسال شده به:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:padding="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="17sp"
+                android:text="از طریق:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </RelativeLayout>
+
 </android.support.v7.widget.CardView>

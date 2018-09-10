@@ -8,7 +8,7 @@
     <string name="description_pattern">description</string>
     <string name="hint_PhoneEditText">شماره تلفن</string>
     <string name="send_Button">ارسال</string>
-    <string name="Subject_EditText">سرفصل</string>
+    <string name="Subject_EditText">عنوان</string>
     <string name="Done_Button">ثبت</string>
     <string name="tak_nameTollbar">تاک</string>
 

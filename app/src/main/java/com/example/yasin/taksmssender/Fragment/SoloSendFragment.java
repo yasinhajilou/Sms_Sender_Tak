@@ -93,8 +93,6 @@ public class SoloSendFragment extends Fragment {
     String messageSubject;
     int messageId;
     ProgressBar progressBar;
-    private static final int INTERNET_WAY = 1;
-    private static final int SIM_CARD_WAY = 0;
     int lengthOfMes;
 
     public SoloSendFragment() {
@@ -419,10 +417,10 @@ public class SoloSendFragment extends Fragment {
             long smsTimeId = addSmsTime();
 
             //add history record
-            long smsHistoryId = addSmsHistory(messageId, smsTimeId, smsDateId, peopleId, INTERNET_WAY);
+            long smsHistoryId = addSmsHistory(messageId, smsTimeId, smsDateId, peopleId, SmsHistoryContract.HistoryEntry.Internet);
 
             //add counter record
-            long smsCounterId = addSmsCounter(smsDateId, smsTimeId, parts.size(), 0);
+            long smsCounterId = addSmsCounter(smsDateId, smsTimeId,0 , parts.size());
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage(s);

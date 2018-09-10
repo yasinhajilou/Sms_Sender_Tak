@@ -47,14 +47,13 @@ public class EditActivity extends AppCompatActivity {
         adapter = new FragmentAdapterSms(getSupportFragmentManager());
         adapter.addFragment(new EditSmsFragment(), "پیام ها");
         adapter.addFragment(new SmsHistoryFragment(), "تاریخچه");
-        adapter.addFragment(new SmsMonitorFragment(), "شمارنده پیام");
+        adapter.addFragment(new SmsMonitorFragment(), "نمودار");
         viewPager.setAdapter(adapter);
 
 
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayOutSms);
         tabLayout.setupWithViewPager(viewPager);
-
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("مدیریت اطلاعات");

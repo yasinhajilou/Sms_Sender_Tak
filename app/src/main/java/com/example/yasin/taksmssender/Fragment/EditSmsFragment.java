@@ -46,6 +46,7 @@ public class EditSmsFragment extends Fragment {
     AlertDialog dialog;
     AlertDialog.Builder builderAlert;
     RecyclerAdapterSms adapter ;
+    TextView textView;
 
     public EditSmsFragment() {
         // Required empty public constructor
@@ -59,6 +60,8 @@ public class EditSmsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_edit_sms, container, false);
         fab = view.findViewById(R.id.fab);
+        textView = view.findViewById(R.id.txtNoSms);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMain);
 
 
@@ -159,6 +162,8 @@ public class EditSmsFragment extends Fragment {
         SQLiteDatabase database = openHelperTak.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + SmsContentContract.SmsEntry.TABLE_NAME_SMS ,null);
         if (cursor.getCount() > 0){
+            textView.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             adapter = new RecyclerAdapterSms(context, LandScape.getData(getContext()));
             recyclerView.setAdapter(adapter);
 

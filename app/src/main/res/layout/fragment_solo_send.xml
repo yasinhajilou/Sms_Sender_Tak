@@ -65,6 +65,7 @@
             android:layout_marginEnd="28dp" />
 
         <com.pchmn.materialchips.ChipsInput
+            android:padding="4dp"
             android:layoutDirection="ltr"
             android:textDirection="ltr"
             app:chip_labelColor="@android:color/white"
@@ -74,7 +75,7 @@
             android:id="@+id/chips_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hint="نام یا شماره تلفن مخاطب را اینجا وارد نمایید"
+            app:hint="نام مخاطب را وارد کنید"
             app:maxRows="3" />
 
         <android.support.v7.widget.AppCompatRadioButton

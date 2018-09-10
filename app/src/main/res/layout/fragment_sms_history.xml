@@ -5,7 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.SmsHistoryFragment">
 
+    <TextView
+        android:id="@+id/txtNoticeHistory"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/bnazanin"
+        android:text="هیچ پیامی فرستاده نشده!"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
         android:id="@+id/recyclerViewSmsHistoryFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

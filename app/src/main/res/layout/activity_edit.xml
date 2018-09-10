@@ -26,7 +26,7 @@
                 android:fontFamily="@font/lalezar"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:text="مدیریت اطلاعات"
+                android:text="مدیریت پیام ها"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -35,6 +35,7 @@
     </android.support.v7.widget.Toolbar>
 
     <android.support.design.widget.TabLayout
+        app:tabSelectedTextColor="@color/textTabLight"
         app:tabTextColor="@android:color/white"
         android:background="@color/colorPrimaryDark"
         android:id="@+id/tabLayOutSms"

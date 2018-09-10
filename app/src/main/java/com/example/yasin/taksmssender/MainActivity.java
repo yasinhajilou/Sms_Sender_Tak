@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     ProgressBar progressBar;
     String groupName;
     Button btnSendGroup;
-    int singleOrGroup;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     int counterSmsHistory;
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     int firstTime;
     private LottieAnimationView animationView;
     ImageButton imgPopup;
-
+    FragmentAdapterSmsWay adapterSmsWay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,11 +121,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         editor = preferences.edit();
         editor.apply();
 
-        FragmentAdapterSmsWay adapterSmsWay = new FragmentAdapterSmsWay(getSupportFragmentManager());
+        adapterSmsWay = new FragmentAdapterSmsWay(getSupportFragmentManager());
         viewPager.setAdapter(adapterSmsWay);
         viewPager.setCurrentItem(0);
         txtLableSolo.setTextSize(26);
         txtLableGroup.setTextSize(20);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             txtLableSolo.setTextColor(getColor(R.color.textTabLight));
             txtLableGroup.setTextColor(getColor(R.color.textTabBright));
@@ -185,15 +185,14 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             }
         });
 
+
+
+
         //Forward old database information to new
         passOldDataToNew(MainActivity.this);
 
-
         //get Read and write and send sms permission
         setPermissionSoloSms();
-
-        //update or transfer contacts data to internal database
-        setUpOrUpdateInternallContacts(MainActivity.this);
 
 
         //codes that setting up spinner with group information
@@ -247,6 +246,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 //        });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapterSmsWay = new FragmentAdapterSmsWay(getSupportFragmentManager());
+        viewPager.setAdapter(adapterSmsWay);
+    }
+
     //this method task is changing style of two text view that showed view pager status
     private void changeLables(int position) {
         switch (position) {
@@ -274,9 +280,11 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
         String[] perms = {Manifest.permission.SEND_SMS, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
         if (EasyPermissions.hasPermissions(MainActivity.this, perms)) {
-
+            //update or transfer contacts data to internal database
+            setUpOrUpdateInternallContacts(MainActivity.this);
+            viewPager.setAdapter(adapterSmsWay);
         } else {
-            EasyPermissions.requestPermissions(MainActivity.this, "برای درست کار کردن برنامه نیاز به تایید کردن دسترسی هاست", 123, perms);
+            EasyPermissions.requestPermissions(MainActivity.this, "برای درست کار کردن برنامه نیاز است که مجوز دسترسی را صادر کنید.", 123, perms);
         }
     }
 
@@ -295,19 +303,17 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         switch (requestCode) {
             case 123:
-                singleOrGroup = 1;
-//                clickOnSend();
+                Toast.makeText(this, "permission Accessed", Toast.LENGTH_SHORT).show();
                 break;
             case 111:
-                singleOrGroup = 2;
-//                clickOnSend();
+                Toast.makeText(this, "permission Accessed", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-        Toast.makeText(this, "برای کار کردن برنامه نیاز به تایید دسترسی هاست", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "شما مجوز دسترسی را رد کردید،برنامه به درستی کار نمی کند!", Toast.LENGTH_LONG).show();
     }
 
 

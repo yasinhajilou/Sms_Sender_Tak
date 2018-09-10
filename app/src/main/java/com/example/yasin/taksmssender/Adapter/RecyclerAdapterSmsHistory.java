@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yasin.taksmssender.Model.SmsHistory;
@@ -36,6 +37,7 @@ public class RecyclerAdapterSmsHistory extends RecyclerView.Adapter<RecyclerAdap
         holder.to.setText(history.getSendTo());
         holder.time.setText(history.getTime());
         holder.date.setText(history.getDate());
+        holder.imageView.setImageResource(history.getImgWay());
     }
 
     @Override
@@ -54,12 +56,14 @@ public class RecyclerAdapterSmsHistory extends RecyclerView.Adapter<RecyclerAdap
         TextView time;
         TextView message;
         TextView to;
+        ImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
             date = itemView.findViewById(R.id.txtSmsDate);
             time = itemView.findViewById(R.id.txtSmsTime);
             message = itemView.findViewById(R.id.txtSmsContent);
             to = itemView.findViewById(R.id.txtSmsTo);
+            imageView = itemView.findViewById(R.id.imgViewWay);
         }
     }
 }

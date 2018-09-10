@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
+import com.example.yasin.taksmssender.R;
 import com.example.yasin.taksmssender.db.Contracts.DateInformation;
 import com.example.yasin.taksmssender.db.Contracts.PeopleInformationContract;
 import com.example.yasin.taksmssender.db.Contracts.SmsContentContract;
@@ -21,6 +22,7 @@ public class SmsHistory {
     private String sendTo;
     private String time;
     private String status;
+    private int ImgWay;
 
     public String getDate() {
         return Date;
@@ -97,6 +99,12 @@ public class SmsHistory {
                     String date = cursorDate.getString(cursorDate.getColumnIndex(DateInformation.DateEntry.COLUMN_MONTH)) + " / " + cursorDate.getString(cursorDate.getColumnIndex(DateInformation.DateEntry.COLUMN_DAY));
                     landScape.setDate(date);
                     landScape.setSendTo(cursorPeople.getString(cursorPeople.getColumnIndex(PeopleInformationContract.PeopleEntry.COLUMN_FULL_NAME_PEOPLE)));
+                    int way = res.getInt(res.getColumnIndex(SmsHistoryContract.HistoryEntry.COLUMN_SEND_WAY));
+                    if (way == SmsHistoryContract.HistoryEntry.sim){
+                        landScape.setImgWay(R.drawable.simcard);
+                    }else {
+                        landScape.setImgWay(R.drawable.wifi);
+                    }
 
                     dataList.add(landScape);
 
@@ -113,5 +121,13 @@ public class SmsHistory {
             return dataList;
         }
 
+    }
+
+    public void setImgWay(int imgWay) {
+        ImgWay = imgWay;
+    }
+
+    public int getImgWay() {
+        return ImgWay;
     }
 }

@@ -34,5 +34,9 @@ public final class SmsHistoryContract {
 
         public static final int status_delivered = 1;
 
+        public static final int sim = 0 ;
+
+        public static final int Internet = 1;
+
     }
 }

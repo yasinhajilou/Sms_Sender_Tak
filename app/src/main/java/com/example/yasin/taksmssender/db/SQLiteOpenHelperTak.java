@@ -22,7 +22,7 @@ public class SQLiteOpenHelperTak extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Tak.db";
 
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
 
     public SQLiteOpenHelperTak(Context context) {
         super(context, DATABASE_NAME, null , VERSION);
@@ -73,6 +73,7 @@ public class SQLiteOpenHelperTak extends SQLiteOpenHelper {
                 HistoryEntry.COLUMN_SEND_DATE + " INTEGER ,"+
                 HistoryEntry.COLUMN_SEND_TIME + " INTEGER , " +
                 HistoryEntry.COLUMN_STATUS + " INTEGER , " +
+                HistoryEntry.COLUMN_SEND_WAY + " INTEGER ," +
                 HistoryEntry.COLUMN_TARGET + " INTEGER );";
 
         db.execSQL(CREATE_SMS_CONTENT_TABLE);
@@ -94,6 +95,10 @@ public class SQLiteOpenHelperTak extends SQLiteOpenHelper {
                 break;
             case 3:
                 db.execSQL("ALTER TABLE "+HistoryEntry.TABLE_NAME_HISTORY +" ADD COLUMN "+HistoryEntry.COLUMN_SEND_WAY +" INTEGER ");
+                break;
+            case 4:
+                db.execSQL("DROP TABLE IF EXISTS "+HistoryEntry.TABLE_NAME_HISTORY);
+                onCreate(db);
                 break;
 //            case 4:
 //                db.execSQL("ALTER TABLE "+ TimeEntry.TABLE_NAME_TIME + " ADD COLUMN " + TimeEntry.COLUMN_PARENT_ID + " INTEGER NOT NULL");

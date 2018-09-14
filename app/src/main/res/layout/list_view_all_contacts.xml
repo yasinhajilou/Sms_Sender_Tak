@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.github.ivbaranov.mli.MaterialLetterIcon
+            android:layout_alignParentLeft="true"
+            android:id="@+id/materialIcon"
+            android:layout_margin="6dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+        <TextView
+            android:layout_marginLeft="6dp"
+            android:layout_alignParentTop="true"
+            android:id="@+id/txtContactFulLName"
+            android:textColor="@color/textTabLight"
+            android:textStyle="bold"
+            android:fontFamily="@font/bnazanin"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@+id/materialIcon"
+            android:text="نام کامل مخاطب"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/materialIcon" />
+        <TextView
+            android:layout_marginLeft="6dp"
+            android:id="@+id/txtContactPhoneNumber"
+            android:fontFamily="@font/bnazanin"
+            android:layout_marginTop="10dp"
+            android:text="09102777777"
+            android:textSize="16sp"
+            android:layout_toRightOf="@id/materialIcon"
+            android:layout_below="@+id/txtContactFulLName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_marginRight="80dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@+id/materialIcon"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
+

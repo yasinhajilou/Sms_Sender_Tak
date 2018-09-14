@@ -71,7 +71,6 @@ public class RecyclerAdapterContacts extends RecyclerView.Adapter<RecyclerAdapte
         }
 
         private void setData(final Contacts contacts, final int position, final Context context) {
-            this.position = position;
             txtPhoneNumber.setText(contacts.getPhoneNumber());
             txtFullName.setText(contacts.getFullName());
             layout.setOnClickListener(new View.OnClickListener() {

@@ -29,10 +29,6 @@
         <activity
             android:name=".EditActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ContactUsActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ManagingGroupsActivity" />
         <activity android:name=".ContactsActivity"></activity>
     </application>
 

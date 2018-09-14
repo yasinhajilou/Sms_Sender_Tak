@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:id="@+id/fab_new_contact"
+    android:title="مخاطب"/>
+
+    <item
+        android:id="@+id/fab_new_group"
+        android:title="گروه" />
+</menu>

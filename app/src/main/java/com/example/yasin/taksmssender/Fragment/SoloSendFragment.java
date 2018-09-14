@@ -32,17 +32,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.andexert.library.RippleView;
 import com.example.yasin.taksmssender.Class.Utilities;
-import com.example.yasin.taksmssender.ContactUsActivity;
-import com.example.yasin.taksmssender.ContactsActivity;
-import com.example.yasin.taksmssender.MainActivity;
+
+
 import com.example.yasin.taksmssender.Model.ContactChip;
-import com.example.yasin.taksmssender.Model.Contacts;
+
 import com.example.yasin.taksmssender.R;
 import com.example.yasin.taksmssender.db.Contracts.DateInformation;
 import com.example.yasin.taksmssender.db.Contracts.PeopleInformationContract;

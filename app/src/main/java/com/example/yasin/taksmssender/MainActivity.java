@@ -2,18 +2,12 @@ package com.example.yasin.taksmssender;
 
 import android.Manifest;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -23,14 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.PopupMenu;
-import android.telephony.SmsManager;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,33 +27,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.example.yasin.taksmssender.Adapter.FragmentAdapterSmsWay;
-import com.example.yasin.taksmssender.Class.Utilities;
 import com.example.yasin.taksmssender.Model.Contacts;
-import com.example.yasin.taksmssender.Model.Groups;
-import com.example.yasin.taksmssender.db.Contracts.DateInformation;
 import com.example.yasin.taksmssender.db.Contracts.PeopleInformationContract;
 import com.example.yasin.taksmssender.db.Contracts.SmsContentContract;
-import com.example.yasin.taksmssender.db.Contracts.SmsContentContract.SmsEntry;
-import com.example.yasin.taksmssender.db.Contracts.PeopleGroupContract.GroupEntry;
-import com.example.yasin.taksmssender.db.Contracts.SmsCounterContract;
-import com.example.yasin.taksmssender.db.Contracts.SmsHistoryContract;
-import com.example.yasin.taksmssender.db.Contracts.TimeInformationContract;
 import com.example.yasin.taksmssender.db.SQLiteOpenHelper;
 import com.example.yasin.taksmssender.db.SQLiteOpenHelperTak;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -99,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     ViewPager viewPager;
     TextView txtLableSolo, txtLableGroup;
     int firstTime;
-    private LottieAnimationView animationView;
     ImageButton imgPopup;
     FragmentAdapterSmsWay adapterSmsWay;
     @Override
@@ -176,6 +144,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                             case R.id.menuEdit:
                                 Intent intent = new Intent(MainActivity.this , EditActivity.class);
                                 startActivity(intent);
+                                break;
+                            case R.id.menuContacts:
+                                Intent intent1 = new Intent(MainActivity.this , ContactsActivity.class);
+                                startActivity(intent1);
                                 break;
                         }
                         return false;

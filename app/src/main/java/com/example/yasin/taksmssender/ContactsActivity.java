@@ -1,6 +1,7 @@
 package com.example.yasin.taksmssender;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -70,10 +71,14 @@ public class ContactsActivity extends AppCompatActivity {
             public boolean onActionSelected(SpeedDialActionItem speedDialActionItem) {
                 switch (speedDialActionItem.getId()) {
                     case R.id.fab_new_contact:
-
+                        Intent intent = new Intent(ContactsActivity.this , AddNewItemActivity.class);
+                        intent.putExtra("intent_situation" , 1);
+                        startActivity(intent);
                         return false; // true to keep the Speed Dial open
                     case R.id.fab_new_group:
-
+                        intent = new Intent(ContactsActivity.this, AddNewItemActivity.class);
+                        intent.putExtra("intent_situation" , 2);
+                        startActivity(intent);
                         return false;
                     default:
                         return false;
@@ -115,6 +120,20 @@ public class ContactsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getData()!=null){
+            adapterAllContacts = new RecyclerAdapterAllContacts(ContactsActivity.this , getData());
+            LinearLayoutManager manager = new LinearLayoutManager(ContactsActivity.this);
+            manager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(adapterAllContacts);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        }
     }
 
     private List<Contacts> getData() {

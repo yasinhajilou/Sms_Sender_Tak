@@ -17,7 +17,8 @@
             android:id="@+id/materialIcon"
             android:layout_margin="6dp"
             android:layout_width="60dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true" />
         <TextView
             android:layout_marginLeft="6dp"
             android:layout_alignParentTop="true"
@@ -31,7 +32,8 @@
             android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/materialIcon" />
+            android:layout_toEndOf="@+id/materialIcon"
+            android:layout_marginStart="6dp" />
         <TextView
             android:layout_marginLeft="6dp"
             android:id="@+id/txtContactPhoneNumber"
@@ -42,7 +44,9 @@
             android:layout_toRightOf="@id/materialIcon"
             android:layout_below="@+id/txtContactFulLName"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_toEndOf="@id/materialIcon" />
         <View
             android:layout_marginRight="80dp"
             android:layout_marginLeft="80dp"
